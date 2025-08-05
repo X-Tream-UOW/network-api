@@ -1,0 +1,20 @@
+### Test the /bias/set-bias endpoint
+POST http://localhost:8000/bias/set-bias?value=200
+
+### Test the /bias/get-bias endpoint
+GET http://localhost:8000/bias/get-bias
+
+### Test the /bias/on endpoint
+POST http://localhost:8000/bias/on
+
+### Test the /bias/off endpoint
+POST http://localhost:8000/bias/off
+
+### Test the /bias/status endpoint
+GET http://localhost:8000/bias/status
+
+### Test the /acquisition/start endpoint
+GET http://localhost:8000/acquisition/start
+
+### Test the /acquisition/set-duration endpoint
+POST http://localhost:8000/acquisition/set-duration?duration=5000
