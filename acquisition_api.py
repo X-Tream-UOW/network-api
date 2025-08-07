@@ -1,7 +1,9 @@
 import logging
 import threading
+from pathlib import Path
 
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
 
 from dll_manager import set_duration_ms, set_custom_filename, start_acquisition, stop_acquisition
 
@@ -36,3 +38,11 @@ def stop_acquisition_endpoint():
     logger.info("Stopping acquisition")
     stop_acquisition()
     return {"message": "Acquisition stop requested"}
+
+
+@acquisition_router.get("/download")
+def download_file(filename: str):
+    path = Path(filename)
+    if not path.exists():
+        return {"error": "File not found"}
+    return FileResponse(path, media_type="application/octet-stream", filename=path.name)

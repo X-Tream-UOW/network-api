@@ -17,13 +17,16 @@ GET http://192.168.0.2:8000/bias/status
 GET http://192.168.0.2:8000/acquisition/start
 
 ### Test the /acquisition/set-duration endpoint
-POST http://192.168.0.2:8000/acquisition/set-duration?duration=50000
+POST http://192.168.0.2:8000/acquisition/set-duration?duration=50
 Content-Type: text/plain
 
 ### Test the /acquisition/set-filename endpoint
-POST http://192.168.0.2:8000/acquisition/set-filename?filename=
+POST http://192.168.0.2:8000/acquisition/set-filename?filename=test_run.bin
 Content-Type: text/plain
 
 ### Test the /acquisition/stop endpoint
 POST http://192.168.0.2:8000/acquisition/stop
 Content-Type: text/plain
+
+### Test the /acquisition/download endpoint
+GET http://192.168.0.2:8000/acquisition/download?filename=test_run.bin
