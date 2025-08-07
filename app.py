@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-
-from acquisition_api import acquisition_router
-from bias_api import bias_router
 from uvicorn import run
+
+from acquisition_api import *
+from bias_api import bias_router
 
 app = FastAPI()
 
