@@ -1,0 +1,14 @@
+### Test the /bias/set-bias endpoint
+POST http://192.168.0.2:8000/bias/set-bias?value=200
+
+### Test the /bias/get-bias endpoint
+GET http://192.168.0.2:8000/bias/get-bias
+
+### Test the /bias/on endpoint
+POST http://192.168.0.2:8000/bias/on
+
+### Test the /bias/off endpoint
+POST http://192.168.0.2:8000/bias/off
+
+### Test the /bias/status endpoint
+GET http://192.168.0.2:8000/bias/status

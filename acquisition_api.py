@@ -3,7 +3,7 @@ import threading
 from pathlib import Path
 from typing import List
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 
 from dll_manager import get_downsampled_samples, set_duration_ms, set_custom_filename, start_acquisition, \
@@ -61,3 +61,18 @@ def list_bin_files():
     data_dir = Path(".")
     bin_files = sorted(f.name for f in data_dir.glob("*.bin"))
     return bin_files
+
+
+@acquisition_router.delete("/delete-all")
+def delete_all_bin_files():
+    bin_files = list(Path(".").glob("*.bin"))
+    if not bin_files:
+        raise HTTPException(status_code=404, detail="No .bin files found")
+
+    for f in bin_files:
+        try:
+            f.unlink()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to delete {f.name}: {e}")
+
+    return {"message": f"Deleted {len(bin_files)} .bin file(s)"}
