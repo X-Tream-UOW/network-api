@@ -1,6 +1,7 @@
 import logging
 import threading
 from pathlib import Path
+from typing import List
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse, FileResponse
@@ -53,3 +54,10 @@ def download_file(filename: str):
 def stream_downsampled(filename: str, max_points: int = 1000):
     samples = get_downsampled_samples(filename, max_points)
     return JSONResponse(content={"samples": samples})
+
+
+@acquisition_router.get("/list-files", response_model=List[str])
+def list_bin_files():
+    data_dir = Path(".")
+    bin_files = sorted(f.name for f in data_dir.glob("*.bin"))
+    return bin_files
