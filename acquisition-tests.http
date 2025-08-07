@@ -1,5 +1,5 @@
 ### Test the /acquisition/set-duration endpoint
-POST http://192.168.0.2:8000/acquisition/set-duration?duration=900
+POST http://192.168.0.2:8000/acquisition/set-duration?duration=50000
 Content-Type: text/plain
 
 
@@ -15,7 +15,7 @@ GET http://192.168.0.2:8000/acquisition/start
 POST http://192.168.0.2:8000/acquisition/stop
 
 ### Test the /acquisition/stream endpoint
-GET http://192.168.0.2:8000/acquisition/stream?filename=test_run.bin&max_points=100
+GET http://192.168.0.2:8000/acquisition/stream
 
 ### Test the /acquisition/download endpoint
 GET http://192.168.0.2:8000/acquisition/download?filename=test_run.bin

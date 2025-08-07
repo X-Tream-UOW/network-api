@@ -28,7 +28,7 @@ def set_acquisition_filename(filename: str):
     return {"message": f"Acquisition filename set to {filename}"}
 
 
-@acquisition_router.get("/start")
+@acquisition_router.get("/start") # TODO : add cleaning on start
 def start_acquisition_endpoint():
     logger.info("Starting acquisition in separate thread")
     t = threading.Thread(target=start_acquisition, daemon=True)
@@ -52,8 +52,8 @@ def download_file(filename: str):
 
 
 @acquisition_router.get("/stream")
-def stream_downsampled(filename: str, max_points: int = 1000):
-    samples = get_downsampled_samples(filename, max_points)
+def stream_downsampled():
+    samples = get_downsampled_samples()
     return JSONResponse(content={"samples": samples})
 
 

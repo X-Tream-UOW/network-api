@@ -1,20 +1,18 @@
 import ctypes
 from pathlib import Path
+from typing import List
 
 
 class SampleRecord(ctypes.Structure):
-    _pack_ = 1
+    _pack_ = 1  # ← this is the missing key
     _fields_ = [
         ("index", ctypes.c_uint32),
         ("sample", ctypes.c_uint16),
     ]
 
 
-class DownsampleResult(ctypes.Structure):
-    _fields_ = [
-        ("data", ctypes.POINTER(SampleRecord)),
-        ("count", ctypes.c_size_t),
-    ]
+class StreamedSamples(ctypes.Structure):
+    _fields_ = [("buffer", ctypes.POINTER(SampleRecord)), ("count", ctypes.c_size_t)]
 
 
 lib_path = Path(__file__).parent / "libacquisition.so"
@@ -32,11 +30,14 @@ lib.set_custom_filename.restype = None
 lib.stop_acquisition.argtypes = []
 lib.stop_acquisition.restype = None
 
-lib.downsample_file.argtypes = [ctypes.c_char_p, ctypes.c_size_t, ctypes.POINTER(DownsampleResult)]
-lib.downsample_file.restype = ctypes.c_int
+lib.get_streamed_samples.argtypes = [ctypes.POINTER(StreamedSamples)]
+lib.get_streamed_samples.restype = ctypes.c_int
 
-lib.free_downsampled.argtypes = [ctypes.POINTER(DownsampleResult)]
-lib.free_downsampled.restype = None
+lib.free_streamed_samples.argtypes = [ctypes.POINTER(StreamedSamples)]
+lib.free_streamed_samples.restype = None
+
+lib.reset_stream_state.argtypes = []
+lib.reset_stream_state.restype = None
 
 
 def set_duration_ms(duration: int) -> None:
@@ -55,19 +56,17 @@ def set_custom_filename(filename: str) -> None:
     lib.set_custom_filename(filename.encode())  # Convert to bytes
 
 
-def get_downsampled_samples(filename: str, max_points: int = 1000):
-    result = DownsampleResult()
-    path = Path(filename).resolve()
-    status = lib.downsample_file(str(path).encode(), max_points, ctypes.byref(result))
+def get_downsampled_samples() -> List[List[int]]:
+    out = StreamedSamples()
+    result = lib.get_streamed_samples(ctypes.byref(out))
 
-    if status != 0 or not result.data:
+    if result != 0 or not bool(out.buffer):
         return []
 
-    samples = [
-        {"index": result.data[i].index, "sample": result.data[i].sample}
-        for i in range(result.count)
-    ]
+    samples = []
+    for i in range(out.count):
+        rec = out.buffer[i]
+        samples.append([rec.index, rec.sample])
 
-    lib.free_downsampled(ctypes.byref(result))
+    lib.free_streamed_samples(ctypes.byref(out))
     return samples
-# TODO : add clean shutdown of the library if needed
