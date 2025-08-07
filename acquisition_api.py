@@ -3,9 +3,10 @@ import threading
 from pathlib import Path
 
 from fastapi import APIRouter
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse, FileResponse
 
-from dll_manager import set_duration_ms, set_custom_filename, start_acquisition, stop_acquisition
+from dll_manager import get_downsampled_samples, set_duration_ms, set_custom_filename, start_acquisition, \
+    stop_acquisition
 
 logger = logging.getLogger(__name__)
 acquisition_router = APIRouter(prefix="/acquisition", tags=["acquisition"])
@@ -46,3 +47,9 @@ def download_file(filename: str):
     if not path.exists():
         return {"error": "File not found"}
     return FileResponse(path, media_type="application/octet-stream", filename=path.name)
+
+
+@acquisition_router.get("/stream")
+def stream_downsampled(filename: str, max_points: int = 1000):
+    samples = get_downsampled_samples(filename, max_points)
+    return JSONResponse(content={"samples": samples})

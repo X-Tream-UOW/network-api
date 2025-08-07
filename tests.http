@@ -30,3 +30,6 @@ Content-Type: text/plain
 
 ### Test the /acquisition/download endpoint
 GET http://192.168.0.2:8000/acquisition/download?filename=test_run.bin
+
+### Test the /acquisition/stream endpoint
+GET http://192.168.0.2:8000/acquisition/stream?filename=test_run.bin&max_points=100
