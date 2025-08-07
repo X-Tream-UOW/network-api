@@ -1,5 +1,5 @@
 ### Test the /acquisition/set-duration endpoint
-POST http://192.168.0.2:8000/acquisition/set-duration?duration=500000
+POST http://192.168.0.2:8000/acquisition/set-duration?duration=900
 Content-Type: text/plain
 
 

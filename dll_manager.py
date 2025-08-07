@@ -70,3 +70,4 @@ def get_downsampled_samples(filename: str, max_points: int = 1000):
 
     lib.free_downsampled(ctypes.byref(result))
     return samples
+# TODO : add clean shutdown of the library if needed

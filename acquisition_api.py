@@ -23,7 +23,8 @@ def set_acquisition_duration(duration: int):
 @acquisition_router.post("/set-filename")
 def set_acquisition_filename(filename: str):
     logger.info(f"Setting acquisition filename to {filename}")
-    set_custom_filename(filename)
+    santized_filename = filename.rsplit('.', 1)[0] if '.' in filename else filename
+    set_custom_filename(santized_filename)
     return {"message": f"Acquisition filename set to {filename}"}
 
 
