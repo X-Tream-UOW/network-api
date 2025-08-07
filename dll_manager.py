@@ -13,6 +13,9 @@ lib.start_acquisition.restype = None
 lib.set_custom_filename.argtypes = [ctypes.c_char_p]
 lib.set_custom_filename.restype = None
 
+lib.stop_acquisition.argtypes = []
+lib.stop_acquisition.restype = None
+
 
 def set_duration_ms(duration: int) -> None:
     lib.set_duration_ms(duration)
@@ -20,6 +23,10 @@ def set_duration_ms(duration: int) -> None:
 
 def start_acquisition() -> None:
     lib.start_acquisition()
+
+
+def stop_acquisition():
+    lib.stop_acquisition()
 
 
 def set_custom_filename(filename: str) -> None:

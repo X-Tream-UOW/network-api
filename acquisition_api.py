@@ -1,7 +1,9 @@
-from fastapi import APIRouter
-import threading
 import logging
-from dll_manager import set_duration_ms, set_custom_filename, start_acquisition
+import threading
+
+from fastapi import APIRouter
+
+from dll_manager import set_duration_ms, set_custom_filename, start_acquisition, stop_acquisition
 
 logger = logging.getLogger(__name__)
 acquisition_router = APIRouter(prefix="/acquisition", tags=["acquisition"])
@@ -27,3 +29,10 @@ def start_acquisition_endpoint():
     t = threading.Thread(target=start_acquisition, daemon=True)
     t.start()
     return {"message": "Acquisition started in background thread"}
+
+
+@acquisition_router.post("/stop")
+def stop_acquisition_endpoint():
+    logger.info("Stopping acquisition")
+    stop_acquisition()
+    return {"message": "Acquisition stop requested"}
