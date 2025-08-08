@@ -10,4 +10,9 @@ app.include_router(bias_router)
 app.include_router(acquisition_router)
 
 if __name__ == '__main__':
-    run(app, host="0.0.0.0", log_level="debug") # TODO : terminate subprocess on leaving
+    try:
+        run(app, host="0.0.0.0", log_level="debug")
+    except KeyboardInterrupt:
+        print("Server stopped")
+    finally:
+        stop_acquisition()
