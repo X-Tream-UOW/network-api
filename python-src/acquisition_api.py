@@ -59,14 +59,14 @@ def stream_downsampled():
 
 @acquisition_router.get("/list-files", response_model=List[str])
 def list_bin_files():
-    data_dir = Path(".")
+    data_dir = Path("..")
     bin_files = sorted(f.name for f in data_dir.glob("*.bin"))
     return bin_files
 
 
 @acquisition_router.delete("/delete-all")
 def delete_all_bin_files():
-    bin_files = list(Path(".").glob("*.bin"))
+    bin_files = list(Path("..").glob("*.bin"))
     if not bin_files:
         raise HTTPException(status_code=404, detail="No .bin files found")
 

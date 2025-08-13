@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Tuple
 
 
-lib_path = Path(__file__).parent / "libacquisition.so"
+lib_path = Path(__file__).parent.parent / "libacquisition.so"
 lib = ctypes.CDLL(str(lib_path))
 
 

@@ -1,0 +1,24 @@
+@host = 192.168.0.2:8000
+
+
+POST http://{{host}}/bias/set-voltage?mv=200
+Content-Type: text/plain
+
+### BIAS: set polarity (true = NEGATIVE, false = POSITIVE)
+POST http://{{host}}/bias/set-polarity?negative=true
+Content-Type: text/plain
+
+### BIAS: turn HV ON
+POST http://{{host}}/bias/on
+Content-Type: text/plain
+
+### BIAS: turn HV OFF
+POST http://{{host}}/bias/off
+Content-Type: text/plain
+
+### BIAS: read status
+GET http://{{host}}/bias/status?timeout_us=100000
+
+### BIAS: read voltage (returns mV and V)
+GET http://{{host}}/bias/voltage?timeout_us=100000
+
