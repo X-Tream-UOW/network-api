@@ -1,47 +1,71 @@
 import logging
 
-from fastapi.routing import APIRouter
+from fastapi import APIRouter, HTTPException
 
-logging.basicConfig(level=logging.INFO)
+from dll_manager import (
+    bias_set_voltage_mv,
+    bias_set_polarity, bias_hv_on, bias_hv_off, bias_get_status, bias_get_bias_mv, BiasError
+)
+
 logger = logging.getLogger(__name__)
-
 bias_router = APIRouter(prefix="/bias", tags=["bias"])
 
-bias_value = None
-bias_on = False
+
+@bias_router.post("/set-voltage")
+def set_voltage(mv: int):
+    logger.info(f"bias.set_voltage_mv({mv})")
+    try:
+        bias_set_voltage_mv(mv)
+        return {"message": f"Bias setpoint set to {mv} mV"}
+    except BiasError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@bias_router.post("/set-bias")
-async def set_bias(value: float):
-    global bias_value
-    bias_value = value
-    logger.info(f"Set bias to {bias_value}")
-    return {"message": f"Bias set to {bias_value}"}
-
-
-@bias_router.get("/get-bias")
-async def get_bias():
-    logger.info("Get bias value")
-    return {"bias_value": bias_value}
+@bias_router.post("/set-polarity")
+def set_polarity(negative: bool):
+    logger.info(f"bias.set_polarity(negative={negative})")
+    try:
+        bias_set_polarity(negative)
+        return {"message": f"Polarity set to {'NEGATIVE' if negative else 'POSITIVE'}"}
+    except BiasError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @bias_router.post("/on")
-async def bias_on_endpoint():
-    global bias_on
-    bias_on = True
-    logger.info("Bias turned ON")
-    return {"message": "Bias is ON"}
+def hv_on():
+    logger.info("bias.hv_on()")
+    try:
+        bias_hv_on()
+        return {"message": "HV enabled (connected to DUT)"}
+    except BiasError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @bias_router.post("/off")
-async def bias_off_endpoint():
-    global bias_on
-    bias_on = False
-    logger.info("Bias turned OFF")
-    return {"message": "Bias is OFF"}
+def hv_off():
+    logger.info("bias.hv_off()")
+    try:
+        bias_hv_off()
+        return {"message": "HV disabled (disconnected from DUT)"}
+    except BiasError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @bias_router.get("/status")
-async def bias_status():
-    logger.info("Get bias status")
-    return {"bias_on": bias_on, "bias_value": bias_value}
+def get_status(timeout_us: int = 100_000):
+    logger.info(f"bias.get_status(timeout_us={timeout_us})")
+    try:
+        enabled, is_negative = bias_get_status(timeout_us=timeout_us)
+        return {"enabled": enabled, "is_negative": is_negative}
+    except BiasError as e:
+        raise HTTPException(status_code=504 if e.code < 0 else 500, detail=str(e))
+
+
+@bias_router.get("/voltage")
+def get_voltage(timeout_us: int = 100_000):
+    logger.info(f"bias.get_bias_mv(timeout_us={timeout_us})")
+    try:
+        mv = bias_get_bias_mv(timeout_us=timeout_us)
+        return {"millivolts": mv, "volts": mv / 1000.0}
+    except BiasError as e:
+        raise HTTPException(status_code=504 if e.code < 0 else 500, detail=str(e))

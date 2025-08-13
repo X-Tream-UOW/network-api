@@ -3,6 +3,7 @@ from uvicorn import run
 
 from acquisition_api import *
 from bias_api import bias_router
+from dll_manager import bias_start_io, bias_stop_io
 
 app = FastAPI()
 
@@ -11,8 +12,10 @@ app.include_router(acquisition_router)
 
 if __name__ == '__main__':
     try:
+        bias_start_io()
         run(app, host="0.0.0.0", log_level="debug")
     except KeyboardInterrupt:
         print("Server stopped")
     finally:
         stop_acquisition()
+        bias_stop_io()

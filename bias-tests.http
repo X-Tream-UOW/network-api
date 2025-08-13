@@ -1,14 +1,27 @@
-### Test the /bias/set-bias endpoint
-POST http://192.168.0.2:8000/bias/set-bias?value=200
+@host = 192.168.0.2:8000
 
-### Test the /bias/get-bias endpoint
-GET http://192.168.0.2:8000/bias/get-bias
 
-### Test the /bias/on endpoint
-POST http://192.168.0.2:8000/bias/on
+POST http://{{host}}/bias/set-voltage?mv=2000
+Content-Type: text/plain
 
-### Test the /bias/off endpoint
-POST http://192.168.0.2:8000/bias/off
+### BIAS: set polarity (true = NEGATIVE, false = POSITIVE)
+POST http://{{host}}/bias/set-polarity?negative=true
+Content-Type: text/plain
 
-### Test the /bias/status endpoint
-GET http://192.168.0.2:8000/bias/status
+### BIAS: turn HV ON (connect to DUT)
+POST http://{{host}}/bias/on
+Content-Type: text/plain
+
+### BIAS: read status (optional timeout_us query)
+GET http://{{host}}/bias/status?timeout_us=100000
+
+### BIAS: read voltage (returns mV and V; optional timeout_us)
+GET http://{{host}}/bias/voltage?timeout_us=100000
+
+### BIAS: turn HV OFF (disconnect from DUT)
+POST http://{{host}}/bias/off
+Content-Type: text/plain
+
+### BIAS: quick polarity flip back to POSITIVE
+POST http://{{host}}/bias/set-polarity?negative=false
+Content-Type: text/plain
