@@ -1,3 +1,5 @@
+""" THis files inspects a binary sample file created during acquisition"""
+
 import argparse
 import math
 import struct

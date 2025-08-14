@@ -2,12 +2,15 @@ import ctypes
 from pathlib import Path
 from typing import List, Tuple
 
-
-lib_path = Path(__file__).parent.parent / "libacquisition.so"
+lib_path = Path(__file__).parent.parent / "xtreamlib.so"
 lib = ctypes.CDLL(str(lib_path))
 
 
+# Acquisition API bindings
+
+
 class SampleRecord(ctypes.Structure):
+    """ Reprensents a single sample record. """
     _pack_ = 1
     _fields_ = [
         ("index", ctypes.c_uint32),
@@ -16,6 +19,7 @@ class SampleRecord(ctypes.Structure):
 
 
 class StreamedSamples(ctypes.Structure):
+    """ Represents a collection of sample. """
     _fields_ = [("buffer", ctypes.POINTER(SampleRecord)), ("count", ctypes.c_size_t)]
 
 
@@ -74,11 +78,8 @@ def reset_stream_state() -> None:
     lib.reset_stream_state()
 
 
-# =========================
 # Bias API bindings
-# =========================
 
-# C signatures
 lib.bias_api_start_io.argtypes = []
 lib.bias_api_start_io.restype = None
 
