@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from uvicorn import run
 
 from acquisition_api import *
@@ -9,6 +10,14 @@ app = FastAPI()
 
 app.include_router(bias_router)
 app.include_router(acquisition_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],      # or ["*"] for a quick demo
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == '__main__':
     try:

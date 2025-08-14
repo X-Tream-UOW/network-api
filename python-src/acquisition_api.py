@@ -67,7 +67,7 @@ def stream_downsampled():  # This could configure the downsampling factor
 @acquisition_router.get("/list-files", response_model=List[str])
 def list_bin_files():
     """ List all .bin files generated during acquisitions in the parent directory on the pi."""
-    data_dir = Path("..")
+    data_dir = Path(".")
     bin_files = sorted(f.name for f in data_dir.glob("*.bin"))
     return bin_files
 
