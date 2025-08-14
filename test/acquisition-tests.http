@@ -2,7 +2,7 @@
 
 
 ### /acquisition/set-duration
-POST http://{{host}}/acquisition/set-duration?duration=5000
+POST http://{{host}}/acquisition/set-duration?duration=500
 Content-Type: text/plain
 
 ### /acquisition/set-filename

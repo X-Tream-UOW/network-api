@@ -75,7 +75,7 @@ def list_bin_files():
 @acquisition_router.delete("/delete-all")
 def delete_all_bin_files():
     """ Delete all .bin files in the parent directory on the pi (mind the space on the SD card!). """
-    bin_files = list(Path("..").glob("*.bin"))
+    bin_files = list(Path(".").glob("*.bin"))
     if not bin_files:
         raise HTTPException(status_code=404, detail="No .bin files found")
 
